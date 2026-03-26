@@ -1,15 +1,97 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.jasondlee.intelliroq</id>
+    <id>com.steeplesoft</id>
     <name>intelliroq</name>
     <vendor>jasondlee</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends optional="true" config-file="quarkus-support.xml">com.redhat.devtools.intellij.quarkus</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.jasondlee.intelliroq.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.jasondlee.intelliroq.startup.MyProjectActivity" />
+        <toolWindow factoryClass="com.steeplesoft.intelliroq.toolWindow.MyToolWindowFactory"
+                    id="Roq"
+                    anchor="right"
+                    icon="AllIcons.Toolwindows.ToolWindowBuild"/>
+        <postStartupActivity implementation="com.steeplesoft.intelliroq.startup.MyProjectActivity" />
+        <configurationType implementation="com.steeplesoft.intelliroq.run.RoqDevModeConfigurationType"/>
+
+        <!-- Project/Module Creation Wizard -->
+        <moduleType id="ROQ_MODULE" implementationClass="com.steeplesoft.intelliroq.wizard.RoqModuleType"/>
+
+        <!-- Phase 3: Data File Inspection -->
+        <localInspection language="yaml"
+                         displayName="Roq Data File Validation"
+                         groupName="Roq"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         implementationClass="com.steeplesoft.intelliroq.inspections.RoqDataFileInspection"/>
+
+        <!-- Phase 4: Qute Template Support -->
+        <psi.referenceContributor implementation="com.steeplesoft.intelliroq.lang.QuteTemplateReferenceContributor"/>
+        <completion.contributor language="HTML"
+                                implementationClass="com.steeplesoft.intelliroq.lang.QuteCompletionContributor"/>
+
+        <!-- Phase 9: Icons -->
+        <iconProvider implementation="com.steeplesoft.intelliroq.projectView.RoqDirectoryIconProvider"/>
+
+        <!-- Phase 10: Documentation -->
+        <lang.documentationProvider language="HTML"
+                                    implementationClass="com.steeplesoft.intelliroq.documentation.QuteDocumentationProvider"/>
     </extensions>
+
+    <actions>
+        <group id="com.steeplesoft.intelliroq.ActionGroup" text="Roq" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="com.steeplesoft.intelliroq.InitializeRoqProject"
+                    class="com.steeplesoft.intelliroq.actions.InitializeRoqProjectAction"
+                    text="Initialize Roq Project Structure"
+                    description="Create the Roq directory structure in this project"/>
+            <separator/>
+            <action id="com.steeplesoft.intelliroq.CreateDataFile"
+                    class="com.steeplesoft.intelliroq.actions.CreateRoqDataFileAction"
+                    text="New Data File..."
+                    description="Create a new data file (YAML/JSON) in the data/ directory"/>
+            <action id="com.steeplesoft.intelliroq.CreateLayout"
+                    class="com.steeplesoft.intelliroq.actions.CreateRoqLayoutAction"
+                    text="New Layout..."
+                    description="Create a new layout template in templates/layouts/"/>
+            <action id="com.steeplesoft.intelliroq.CreatePartial"
+                    class="com.steeplesoft.intelliroq.actions.CreateRoqPartialAction"
+                    text="New Partial..."
+                    description="Create a new partial template in templates/partials/"/>
+            <separator/>
+            <action id="com.steeplesoft.intelliroq.AddRoqPlugin"
+                    class="com.steeplesoft.intelliroq.actions.AddRoqPluginAction"
+                    text="Add Roq Plugin..."
+                    description="Add a Roq plugin dependency to your project"/>
+            <action id="com.steeplesoft.intelliroq.ViewInstalledPlugins"
+                    class="com.steeplesoft.intelliroq.actions.ViewInstalledPluginsAction"
+                    text="View Installed Plugins"
+                    description="View currently installed Roq plugins"/>
+            <separator/>
+            <action id="com.steeplesoft.intelliroq.BuildRoqSite"
+                    class="com.steeplesoft.intelliroq.actions.BuildRoqSiteAction"
+                    text="Build Static Site"
+                    description="Build the Roq static site for production"/>
+            <separator/>
+            <action id="com.steeplesoft.intelliroq.ShowSiteStructure"
+                    class="com.steeplesoft.intelliroq.actions.ShowSiteStructureAction"
+                    text="Show Site Structure"
+                    description="Visualize the site structure and page hierarchy"/>
+            <action id="com.steeplesoft.intelliroq.ShowRoqHelp"
+                    class="com.steeplesoft.intelliroq.actions.ShowRoqHelpAction"
+                    text="Roq Plugin Help"
+                    description="Show help and documentation for the IntelliRoq plugin"/>
+        </group>
+
+        <!-- Phase 11: Context Action for SEO -->
+        <action id="com.steeplesoft.intelliroq.AnalyzeSeo"
+                class="com.steeplesoft.intelliroq.actions.AnalyzeSeoAction"
+                text="Analyze SEO"
+                description="Analyze this content file for SEO issues">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>

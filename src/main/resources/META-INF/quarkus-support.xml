@@ -1,0 +1,9 @@
+<idea-plugin>
+    <!-- Optional integration with Quarkus Tools plugin -->
+    <!-- This file is loaded only when com.redhat.devtools.intellij.quarkus is available -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Future Quarkus-specific integrations can be added here -->
+        <!-- For example: Quarkus-aware run configurations, Roq extension detection, etc. -->
+    </extensions>
+</idea-plugin>

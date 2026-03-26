@@ -1,4 +1,4 @@
-package com.github.jasondlee.intelliroq
+package com.steeplesoft.intelliroq
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls

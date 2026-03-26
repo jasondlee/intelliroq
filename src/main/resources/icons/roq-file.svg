@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <path fill="#6E6E6E" d="M3 1h10v14H3z"/>
+  <path fill="#9AA7B0" d="M3 1h10v3H3z"/>
+  <text x="8" y="11" font-family="Arial" font-size="6" fill="white" text-anchor="middle">R</text>
+</svg>
