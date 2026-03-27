@@ -4,14 +4,32 @@
     <name>intelliroq</name>
     <vendor>jasondlee</vendor>
 
+    <description><![CDATA[
+        IntelliRoq provides comprehensive IDE support for Roq static site generator projects in IntelliJ IDEA.
+        Build, manage, and preview Roq-powered websites directly from your IDE with intelligent project management,
+        plugin installation, and integrated development workflows.
+
+        <p><b>Key Features:</b></p>
+        <ul>
+            <li>Automatic Roq project detection and initialization</li>
+            <li>One-click creation of data files, layouts, and partials</li>
+            <li>Interactive Roq plugin management (10 official plugins supported)</li>
+            <li>Integrated Quarkus dev mode with live reload</li>
+            <li>Production build generation</li>
+            <li>Dedicated tool window for project overview and quick actions</li>
+        </ul>
+
+        <p>Streamline your Roq development workflow with native IDE integration.</p>
+    ]]></description>
+
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>com.intellij.properties</depends>
     <depends>com.redhat.devtools.intellij.quarkus</depends>
     <depends>com.redhat.devtools.lsp4ij</depends>
     <depends>com.redhat.devtools.intellij.telemetry</depends>
-    <depends optional="true">org.jetbrains.idea.maven</depends>
-    <depends optional="true">org.jetbrains.plugins.gradle</depends>
+    <depends>org.jetbrains.idea.maven</depends>
+    <depends>org.jetbrains.plugins.gradle</depends>
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
