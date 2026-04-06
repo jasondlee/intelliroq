@@ -9,8 +9,10 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleType
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.ui.Messages
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VirtualFile
 import com.steeplesoft.intelliroq.bar.QuarkusCodestartRoqProjectGenerator
+import com.steeplesoft.intelliroq.bar.QuarkusCreateProjectRoqGenerator
 import com.steeplesoft.intelliroq.icons.RoqIcons
 import io.quarkus.devtools.project.BuildTool
 import org.jetbrains.jps.model.java.JavaResourceRootType
@@ -24,31 +26,54 @@ class RoqModuleBuilder : ModuleBuilder() {
         MAVEN, GRADLE
     }
 
+    enum class GenerationMode {
+        MANUAL,
+        CODESTART_API,
+        CREATE_PROJECT_COMMAND
+    }
+
     var siteUrl: String = "http://localhost:8080"
     var selectedPlugins: MutableSet<String> = mutableSetOf("markdown")
     var buildSystem: BuildSystem = BuildSystem.MAVEN
-    var useCodestartGenerator: Boolean = true
+    var generationMode: GenerationMode = GenerationMode.CREATE_PROJECT_COMMAND
 
     override fun getModuleType(): ModuleType<*> = RoqModuleType.INSTANCE
 
     override fun setupRootModel(modifiableRootModel: ModifiableRootModel) {
         super.setupRootModel(modifiableRootModel)
 
-        val contentEntry = doAddContentEntry(modifiableRootModel) ?: run {
-            thisLogger().error("Failed to create content entry for Roq project")
-            return
-        }
-
-        val baseDir = contentEntry.file ?: run {
-            thisLogger().error("Content entry has no file")
-            return
-        }
-
         try {
-            if (useCodestartGenerator) {
-                // Use the Quarkus Codestart API
-                createProjectWithCodestart(baseDir, modifiableRootModel)
-            } else {
+            when (generationMode) {
+                GenerationMode.CODESTART_API -> {
+                    // Use the Quarkus Codestart API
+                    createProjectWithCodestart(
+                        LocalFileSystem.getInstance().refreshAndFindFileByPath(contentEntryPath!!.replace('\\', '/'))!!,
+                        modifiableRootModel
+                    )
+                }
+                GenerationMode.CREATE_PROJECT_COMMAND -> {
+                    // Use the CreateProject command API
+                    createProjectWithCreateProjectCommand(
+                        LocalFileSystem.getInstance().refreshAndFindFileByPath(contentEntryPath!!.replace('\\', '/'))!!,
+                        modifiableRootModel
+                    )
+                }
+                GenerationMode.MANUAL -> {
+                    // Use manual generation - will be done below
+                }
+            }
+
+            val contentEntry = doAddContentEntry(modifiableRootModel) ?: run {
+                thisLogger().error("Failed to create content entry for Roq project")
+                return
+            }
+
+            val baseDir = contentEntry.file ?: run {
+                thisLogger().error("Content entry has no file")
+                return
+            }
+
+            if (generationMode == GenerationMode.MANUAL) {
                 // Use the manual generation approach
                 createProjectManually(baseDir, contentEntry)
             }
@@ -86,6 +111,48 @@ class RoqModuleBuilder : ModuleBuilder() {
         val additionalPlugins = selectedPlugins.filter { it != "markdown" }.toSet()
 
         val config = QuarkusCodestartRoqProjectGenerator.RoqProjectConfig(
+            outputPath = baseDir.toNioPath(),
+            groupId = "com.example",
+            artifactId = baseDir.name,
+            version = "1.0.0-SNAPSHOT",
+            buildTool = quarkusBuildTool,
+            javaVersion = "21",
+            includeDefaultTheme = true,
+            additionalPlugins = additionalPlugins
+        )
+
+        generator.createRoqProject(config)
+
+        // Mark src/main/resources as resource root
+        baseDir.refresh(false, true)
+        val resourcesDir = baseDir.findFileByRelativePath("src/main/resources")
+        if (resourcesDir != null) {
+            val contentEntry = modifiableRootModel.contentEntries.firstOrNull()
+            contentEntry?.addSourceFolder(resourcesDir, JavaResourceRootType.RESOURCE)
+        }
+    }
+
+    /**
+     * Creates the project using the Quarkus CreateProject command API.
+     */
+    private fun createProjectWithCreateProjectCommand(
+        baseDir: com.intellij.openapi.vfs.VirtualFile,
+        modifiableRootModel: ModifiableRootModel
+    ) {
+        thisLogger().info("Creating Roq project using CreateProject command API")
+
+        val generator = QuarkusCreateProjectRoqGenerator()
+
+        // Convert build system
+        val quarkusBuildTool = when (buildSystem) {
+            BuildSystem.MAVEN -> BuildTool.MAVEN
+            BuildSystem.GRADLE -> BuildTool.GRADLE_KOTLIN_DSL
+        }
+
+        // Filter out "markdown" from selected plugins as it's core
+        val additionalPlugins = selectedPlugins.filter { it != "markdown" }.toSet()
+
+        val config = QuarkusCreateProjectRoqGenerator.RoqProjectConfig(
             outputPath = baseDir.toNioPath(),
             groupId = "com.example",
             artifactId = baseDir.name,

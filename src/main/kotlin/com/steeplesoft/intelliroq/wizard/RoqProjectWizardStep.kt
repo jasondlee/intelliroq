@@ -16,19 +16,36 @@ import javax.swing.*
  */
 class RoqProjectWizardStep(private val builder: RoqModuleBuilder) : ModuleWizardStep() {
 
-    private val useCodestartCheckbox = JCheckBox(
-        "Use Quarkus Codestart API (experimental - uses official Quarkus project generator)",
-        true
-    )
+    // Generation mode radio buttons
+    private val manualRadio = JRadioButton("Manual generation", false)
+    private val codestartRadio = JRadioButton("Quarkus Codestart API", false)
+    private val createProjectRadio = JRadioButton("CreateProject Command API (recommended)", true)
+
+    // Build system radio buttons
     private val mavenRadio = JRadioButton("Maven", true)
     private val gradleRadio = JRadioButton("Gradle", false)
+
     private val siteUrlField = JBTextField("http://localhost:8080", 30)
     private val pluginCheckboxes = mutableMapOf<String, JCheckBox>()
 
     private val mainPanel: JPanel
 
     init {
-        // Group radio buttons
+        // Group generation mode radio buttons
+        val generationModeGroup = ButtonGroup()
+        generationModeGroup.add(manualRadio)
+        generationModeGroup.add(codestartRadio)
+        generationModeGroup.add(createProjectRadio)
+
+        // Create generation mode panel
+        val generationModePanel = JPanel().apply {
+            layout = BoxLayout(this, BoxLayout.Y_AXIS)
+            add(createProjectRadio)
+            add(codestartRadio)
+            add(manualRadio)
+        }
+
+        // Group build system radio buttons
         val buildSystemGroup = ButtonGroup()
         buildSystemGroup.add(mavenRadio)
         buildSystemGroup.add(gradleRadio)
@@ -39,12 +56,6 @@ class RoqProjectWizardStep(private val builder: RoqModuleBuilder) : ModuleWizard
             add(mavenRadio)
             add(Box.createHorizontalStrut(20))
             add(gradleRadio)
-            /*
-            segmentedButton(listOf("Maven", "Gradle")) {
-                    text = it
-                    toolTipText = it
-                }.bind(buildSystemProperty)
-             */
         }
 
         // Create plugins panel with 2 columns
@@ -52,7 +63,7 @@ class RoqProjectWizardStep(private val builder: RoqModuleBuilder) : ModuleWizard
 
         // Build main panel using FormBuilder
         mainPanel = FormBuilder.createFormBuilder()
-            .addComponent(useCodestartCheckbox)
+            .addLabeledComponent(JBLabel("Project generation:"), generationModePanel)
             .addVerticalGap(10)
             .addSeparator()
             .addVerticalGap(10)
@@ -102,8 +113,13 @@ class RoqProjectWizardStep(private val builder: RoqModuleBuilder) : ModuleWizard
     override fun getComponent(): JComponent = mainPanel
 
     override fun updateDataModel() {
-        // Save codestart preference
-        builder.useCodestartGenerator = useCodestartCheckbox.isSelected
+        // Save generation mode preference
+        builder.generationMode = when {
+            manualRadio.isSelected -> RoqModuleBuilder.GenerationMode.MANUAL
+            codestartRadio.isSelected -> RoqModuleBuilder.GenerationMode.CODESTART_API
+            createProjectRadio.isSelected -> RoqModuleBuilder.GenerationMode.CREATE_PROJECT_COMMAND
+            else -> RoqModuleBuilder.GenerationMode.CREATE_PROJECT_COMMAND // default
+        }
 
         // Save build system selection
         builder.buildSystem = if (mavenRadio.isSelected) {
