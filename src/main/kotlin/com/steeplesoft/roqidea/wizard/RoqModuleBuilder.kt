@@ -128,6 +128,13 @@ class RoqModuleBuilder : ModuleBuilder() {
         }
     }
 
+    /*
+     * Before execution is handed to roq-idea, the IntelliJ platform has already create the project directory and supporting
+     * project files. There is code in Quarkus to prevent project creation in non-emptry directories that appears to be
+     * non-optional, so this ugly hack moves the project files out of the way, allows the project creation to complete, then
+     * moves the files back into place. Ideally, Quarkus would allow non-empty project dires, and perhaps it does. While
+     * I chase down a good answer to that, this kludge will let me continue.
+     */
     private fun moveProjectFiles(baseDir: com.intellij.openapi.vfs.VirtualFile, backup: Boolean) {
         val tmpDir = System.getProperty("java.io.tmpdir")
         var srcDir = Path.of(baseDir.canonicalPath!!)
