@@ -24,7 +24,7 @@
     <GradleProfilingDisabled>false</GradleProfilingDisabled>
     <GradleCoverageDisabled>false</GradleCoverageDisabled>
     <method v="2">
-      <option name="RunConfigurationTask" enabled="true" run_configuration_name="intelliroq [clean]" run_configuration_type="GradleRunConfiguration" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="roq-idea [clean]" run_configuration_type="GradleRunConfiguration" />
     </method>
   </configuration>
 </component>

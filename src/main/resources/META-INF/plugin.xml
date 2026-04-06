@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.steeplesoft</id>
-    <name>intelliroq</name>
+    <name>roq-idea</name>
     <vendor>jasondlee</vendor>
 
     <description><![CDATA[
-        IntelliRoq provides comprehensive IDE support for Roq static site generator projects in IntelliJ IDEA.
+        Roq-idea provides comprehensive IDE support for Roq static site generator projects in IntelliJ IDEA.
         Build, manage, and preview Roq-powered websites directly from your IDE with intelligent project management,
         plugin installation, and integrated development workflows.
 
@@ -34,15 +34,15 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.steeplesoft.intelliroq.toolWindow.MyToolWindowFactory"
+        <toolWindow factoryClass="com.steeplesoft.roqidea.toolWindow.MyToolWindowFactory"
                     id="Roq"
                     anchor="right"
                     icon="AllIcons.Toolwindows.ToolWindowBuild"/>
-        <postStartupActivity implementation="com.steeplesoft.intelliroq.startup.MyProjectActivity" />
-        <configurationType implementation="com.steeplesoft.intelliroq.run.RoqDevModeConfigurationType"/>
+        <postStartupActivity implementation="com.steeplesoft.roqidea.startup.MyProjectActivity" />
+        <configurationType implementation="com.steeplesoft.roqidea.run.RoqDevModeConfigurationType"/>
 
         <!-- Project/Module Creation Wizard -->
-        <moduleType id="ROQ_MODULE" implementationClass="com.steeplesoft.intelliroq.wizard.RoqModuleType"/>
+        <moduleType id="ROQ_MODULE" implementationClass="com.steeplesoft.roqidea.wizard.RoqModuleType"/>
 
         <!-- Phase 3: Data File Inspection -->
         <localInspection language="yaml"
@@ -50,89 +50,89 @@
                          groupName="Roq"
                          enabledByDefault="true"
                          level="WARNING"
-                         implementationClass="com.steeplesoft.intelliroq.inspections.RoqDataFileInspection"/>
+                         implementationClass="com.steeplesoft.roqidea.inspections.RoqDataFileInspection"/>
 
         <!-- Phase 4: Qute Template Support -->
-        <psi.referenceContributor implementation="com.steeplesoft.intelliroq.lang.QuteTemplateReferenceContributor"/>
+        <psi.referenceContributor implementation="com.steeplesoft.roqidea.lang.QuteTemplateReferenceContributor"/>
         <completion.contributor language="HTML"
-                                implementationClass="com.steeplesoft.intelliroq.lang.QuteCompletionContributor"/>
+                                implementationClass="com.steeplesoft.roqidea.lang.QuteCompletionContributor"/>
 
         <!-- Phase 9: Icons -->
-        <iconProvider implementation="com.steeplesoft.intelliroq.projectView.RoqDirectoryIconProvider"/>
+        <iconProvider implementation="com.steeplesoft.roqidea.projectView.RoqDirectoryIconProvider"/>
 
         <!-- Phase 10: Documentation -->
         <lang.documentationProvider language="HTML"
-                                    implementationClass="com.steeplesoft.intelliroq.documentation.QuteDocumentationProvider"/>
+                                    implementationClass="com.steeplesoft.roqidea.documentation.QuteDocumentationProvider"/>
     </extensions>
 
     <actions>
         <!-- Roq "New" actions in File | New menu -->
-        <action id="com.steeplesoft.intelliroq.CreateDataFile"
-                class="com.steeplesoft.intelliroq.actions.CreateRoqDataFileAction"
+        <action id="com.steeplesoft.roqidea.CreateDataFile"
+                class="com.steeplesoft.roqidea.actions.CreateRoqDataFileAction"
                 text="Roq Data File"
                 description="Create a new data file (YAML/JSON) in the data/ directory">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
-        <action id="com.steeplesoft.intelliroq.CreateLayout"
-                class="com.steeplesoft.intelliroq.actions.CreateRoqLayoutAction"
+        <action id="com.steeplesoft.roqidea.CreateLayout"
+                class="com.steeplesoft.roqidea.actions.CreateRoqLayoutAction"
                 text="Roq Layout"
                 description="Create a new layout template in templates/layouts/">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
-        <action id="com.steeplesoft.intelliroq.CreatePartial"
-                class="com.steeplesoft.intelliroq.actions.CreateRoqPartialAction"
+        <action id="com.steeplesoft.roqidea.CreatePartial"
+                class="com.steeplesoft.roqidea.actions.CreateRoqPartialAction"
                 text="Roq Partial"
                 description="Create a new partial template in templates/partials/">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
 
-        <group id="com.steeplesoft.intelliroq.ActionGroup" text="Roq" popup="true">
+        <group id="com.steeplesoft.roqidea.ActionGroup" text="Roq" popup="true">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
-            <action id="com.steeplesoft.intelliroq.InitializeRoqProject"
-                    class="com.steeplesoft.intelliroq.actions.InitializeRoqProjectAction"
+            <action id="com.steeplesoft.roqidea.InitializeRoqProject"
+                    class="com.steeplesoft.roqidea.actions.InitializeRoqProjectAction"
                     text="Initialize Roq Project Structure"
                     description="Create the Roq directory structure in this project"/>
             <separator/>
-            <action id="com.steeplesoft.intelliroq.CreateDataFile.Tools"
-                    class="com.steeplesoft.intelliroq.actions.CreateRoqDataFileAction"
+            <action id="com.steeplesoft.roqidea.CreateDataFile.Tools"
+                    class="com.steeplesoft.roqidea.actions.CreateRoqDataFileAction"
                     text="New Data File..."
                     description="Create a new data file (YAML/JSON) in the data/ directory"/>
-            <action id="com.steeplesoft.intelliroq.CreateLayout.Tools"
-                    class="com.steeplesoft.intelliroq.actions.CreateRoqLayoutAction"
+            <action id="com.steeplesoft.roqidea.CreateLayout.Tools"
+                    class="com.steeplesoft.roqidea.actions.CreateRoqLayoutAction"
                     text="New Layout..."
                     description="Create a new layout template in templates/layouts/"/>
-            <action id="com.steeplesoft.intelliroq.CreatePartial.Tools"
-                    class="com.steeplesoft.intelliroq.actions.CreateRoqPartialAction"
+            <action id="com.steeplesoft.roqidea.CreatePartial.Tools"
+                    class="com.steeplesoft.roqidea.actions.CreateRoqPartialAction"
                     text="New Partial..."
                     description="Create a new partial template in templates/partials/"/>
             <separator/>
-            <action id="com.steeplesoft.intelliroq.AddRoqPlugin"
-                    class="com.steeplesoft.intelliroq.actions.AddRoqPluginAction"
+            <action id="com.steeplesoft.roqidea.AddRoqPlugin"
+                    class="com.steeplesoft.roqidea.actions.AddRoqPluginAction"
                     text="Add Roq Plugin..."
                     description="Add a Roq plugin dependency to your project"/>
-            <action id="com.steeplesoft.intelliroq.ViewInstalledPlugins"
-                    class="com.steeplesoft.intelliroq.actions.ViewInstalledPluginsAction"
+            <action id="com.steeplesoft.roqidea.ViewInstalledPlugins"
+                    class="com.steeplesoft.roqidea.actions.ViewInstalledPluginsAction"
                     text="View Installed Plugins"
                     description="View currently installed Roq plugins"/>
             <separator/>
-            <action id="com.steeplesoft.intelliroq.BuildRoqSite"
-                    class="com.steeplesoft.intelliroq.actions.BuildRoqSiteAction"
+            <action id="com.steeplesoft.roqidea.BuildRoqSite"
+                    class="com.steeplesoft.roqidea.actions.BuildRoqSiteAction"
                     text="Build Static Site"
                     description="Build the Roq static site for production"/>
             <separator/>
-            <action id="com.steeplesoft.intelliroq.ShowSiteStructure"
-                    class="com.steeplesoft.intelliroq.actions.ShowSiteStructureAction"
+            <action id="com.steeplesoft.roqidea.ShowSiteStructure"
+                    class="com.steeplesoft.roqidea.actions.ShowSiteStructureAction"
                     text="Show Site Structure"
                     description="Visualize the site structure and page hierarchy"/>
-            <action id="com.steeplesoft.intelliroq.ShowRoqHelp"
-                    class="com.steeplesoft.intelliroq.actions.ShowRoqHelpAction"
+            <action id="com.steeplesoft.roqidea.ShowRoqHelp"
+                    class="com.steeplesoft.roqidea.actions.ShowRoqHelpAction"
                     text="Roq Plugin Help"
-                    description="Show help and documentation for the IntelliRoq plugin"/>
+                    description="Show help and documentation for the roq-idea plugin"/>
         </group>
 
         <!-- Phase 11: Context Action for SEO -->
-        <action id="com.steeplesoft.intelliroq.AnalyzeSeo"
-                class="com.steeplesoft.intelliroq.actions.AnalyzeSeoAction"
+        <action id="com.steeplesoft.roqidea.AnalyzeSeo"
+                class="com.steeplesoft.roqidea.actions.AnalyzeSeoAction"
                 text="Analyze SEO"
                 description="Analyze this content file for SEO issues">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>

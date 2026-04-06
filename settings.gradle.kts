@@ -3,3 +3,4 @@ plugins {
 }
 
 rootProject.name = "intelliroq"
+rootProject.name = "roqidea"
