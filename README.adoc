@@ -1,13 +1,13 @@
-= IntelliRoq
+= Roq Idea
 
-image:https://github.com/jasondlee/intelliroq/workflows/Build/badge.svg[Build]
+image:https://github.com/jasondlee/roq-idea/workflows/Build/badge.svg[Build]
 image:https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg[Version,link=https://plugins.jetbrains.com/plugin/MARKETPLACE_ID]
 image:https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg[Downloads,link=https://plugins.jetbrains.com/plugin/MARKETPLACE_ID]
 
 ////
 Plugin description
 ////
-IntelliRoq provides comprehensive IDE support for link:https://iamroq.com[Roq] static site generator projects in IntelliJ IDEA. Build, manage, and preview Roq-powered websites directly from your IDE with intelligent project management, plugin installation, and integrated development workflows.
+roq-idea provides IDE support for link:https://iamroq.com[Roq] static site generator projects in IntelliJ IDEA. Build, manage, and preview Roq-powered websites directly from your IDE with intelligent project management, plugin installation, and integrated development workflows.
 
 *Key Features:*
 
@@ -76,7 +76,7 @@ Plugin description end
 
 === Using IDE Built-in Plugin System
 
-kbd:[Settings/Preferences] > kbd:[Plugins] > kbd:[Marketplace] > kbd:[Search for "IntelliRoq"] > kbd:[Install]
+kbd:[Settings/Preferences] > kbd:[Plugins] > kbd:[Marketplace] > kbd:[Search for "roq-idea"] > kbd:[Install]
 
 === Using JetBrains Marketplace
 
@@ -87,7 +87,7 @@ kbd:[Settings/Preferences] > kbd:[Plugins] > kbd:[⚙️] > kbd:[Install plugin 
 
 === Manual Installation
 
-Download the link:https://github.com/jasondlee/intelliroq/releases/latest[latest release] and install it manually using
+Download the link:https://github.com/jasondlee/roq-idea/releases/latest[latest release] and install it manually using
 kbd:[Settings/Preferences] > kbd:[Plugins] > kbd:[⚙️] > kbd:[Install plugin from disk...]
 
 == Getting Started
@@ -168,9 +168,9 @@ Contributions are welcome! Please see link:CLAUDE.md[CLAUDE.md] for development 
 
 == Support
 
-* *Issues*: link:https://github.com/jasondlee/intelliroq/issues[GitHub Issues]
+* *Issues*: link:https://github.com/jasondlee/roq-idea/issues[GitHub Issues]
 * *Roq Documentation*: link:https://iamroq.com[iamroq.com]
-* *Plugin Repository*: link:https://github.com/jasondlee/intelliroq[github.com/jasondlee/intelliroq]
+* *Plugin Repository*: link:https://github.com/jasondlee/roq-idea[github.com/jasondlee/roq-idea]
 
 == License
 
