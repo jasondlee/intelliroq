@@ -108,7 +108,9 @@ class RoqIncludeReference(element: PsiElement, textRange: TextRange, private val
         // Search for each filename using IntelliJ's FilenameIndex
         val scope = GlobalSearchScope.projectScope(project)
         for (filenameToTry in filenamesToTry) {
-            val psiFiles = FilenameIndex.getFilesByName(project, filenameToTry, scope)
+            val virtualFiles = FilenameIndex.getVirtualFilesByName(filenameToTry, scope)
+            val psiManager = PsiManager.getInstance(project)
+            val psiFiles = virtualFiles.mapNotNull { psiManager.findFile(it) }
 
             // Filter to only files in the correct templates subdirectory
             psiFiles.forEach { psiFile ->

@@ -70,8 +70,7 @@ class RoqDevModeRunState(
     }
 
     private fun hasMaven(project: com.intellij.openapi.project.Project): Boolean {
-        val pomFiles = FilenameIndex.getFilesByName(
-            project,
+        val pomFiles = FilenameIndex.getVirtualFilesByName(
             "pom.xml",
             GlobalSearchScope.projectScope(project)
         )
@@ -81,8 +80,7 @@ class RoqDevModeRunState(
     private fun hasGradle(project: com.intellij.openapi.project.Project): Boolean {
         val buildFiles = listOf("build.gradle", "build.gradle.kts")
         return buildFiles.any { filename ->
-            FilenameIndex.getFilesByName(
-                project,
+            FilenameIndex.getVirtualFilesByName(
                 filename,
                 GlobalSearchScope.projectScope(project)
             ).isNotEmpty()

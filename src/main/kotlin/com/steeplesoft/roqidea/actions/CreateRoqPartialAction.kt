@@ -8,6 +8,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.InputValidator
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.vfs.VirtualFile
@@ -90,7 +91,7 @@ class CreateRoqPartialAction : AnAction() {
 
     private fun getOrCreatePartialsDir(project: Project): VirtualFile? {
         return WriteCommandAction.writeCommandAction(project).compute<VirtualFile?, IOException> {
-            val baseDir = project.baseDir ?: return@compute null
+            val baseDir = project.guessProjectDir() ?: return@compute null
 
             var templatesDir = baseDir.findChild("templates")
             if (templatesDir == null) {

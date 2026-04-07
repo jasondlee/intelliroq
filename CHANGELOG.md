@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# intelliroq Changelog
+# roq-idea Changelog
 
 ## [Unreleased]
 ### Added

@@ -2,8 +2,10 @@ package com.steeplesoft.roqidea.services
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import java.io.IOException
@@ -28,7 +30,7 @@ class RoqProjectDetector(private val project: Project) {
      * Checks if the project has the typical Roq directory structure.
      */
     fun hasRoqStructure(): Boolean {
-        val baseDir = project.baseDir ?: return false
+        val baseDir = project.guessProjectDir() ?: return false
 
         // content/ is the most reliable indicator of a Roq project
         val contentDir = baseDir.findChild("content")
@@ -69,15 +71,14 @@ class RoqProjectDetector(private val project: Project) {
      * Checks Maven pom.xml for Roq dependencies.
      */
     private fun hasMavenRoqDependencies(): Boolean {
-        val pomFiles = FilenameIndex.getFilesByName(
-            project,
+        val pomFiles = FilenameIndex.getVirtualFilesByName(
             "pom.xml",
             GlobalSearchScope.projectScope(project)
         )
 
         return pomFiles.any { pomFile ->
             try {
-                val content = String(pomFile.virtualFile.contentsToByteArray())
+                val content = String(pomFile.contentsToByteArray())
                 content.contains("io.quarkiverse.roq") &&
                 (content.contains("quarkus-roq") || content.contains("quarkus-roq-plugin"))
             } catch (e: IOException) {
@@ -93,15 +94,14 @@ class RoqProjectDetector(private val project: Project) {
         val buildFiles = listOf("build.gradle", "build.gradle.kts")
 
         return buildFiles.any { filename ->
-            val files = FilenameIndex.getFilesByName(
-                project,
+            val files = FilenameIndex.getVirtualFilesByName(
                 filename,
                 GlobalSearchScope.projectScope(project)
             )
 
             files.any { buildFile ->
                 try {
-                    val content = String(buildFile.virtualFile.contentsToByteArray())
+                    val content = String(buildFile.contentsToByteArray())
                     content.contains("io.quarkiverse.roq") &&
                     (content.contains("quarkus-roq") || content.contains("quarkus-roq-plugin"))
                 } catch (e: IOException) {
@@ -115,21 +115,22 @@ class RoqProjectDetector(private val project: Project) {
      * Finds application.properties file in the project.
      */
     private fun findApplicationProperties(): PsiFile? {
-        val files = FilenameIndex.getFilesByName(
-            project,
+        val files = FilenameIndex.getVirtualFilesByName(
             "application.properties",
             GlobalSearchScope.projectScope(project)
         )
 
+        val psiManager = PsiManager.getInstance(project)
         // Prefer the one in src/main/resources
-        return files.firstOrNull { it.virtualFile.path.contains("src/main/resources") } ?: files.firstOrNull()
+        return files.firstOrNull { it.path.contains("src/main/resources") }?.let { psiManager.findFile(it) }
+            ?: files.firstOrNull()?.let { psiManager.findFile(it) }
     }
 
     /**
      * Gets Roq-related directories in the project.
      */
     fun getRoqDirectories(): RoqDirectories {
-        val baseDir = project.baseDir
+        val baseDir = project.guessProjectDir()
 
         return RoqDirectories(
             contentDir = baseDir?.findChild("content"),

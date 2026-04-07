@@ -51,12 +51,12 @@ class AddRoqPluginAction : AnAction() {
         // Show selection dialog
         val pluginNames = availablePlugins.map { "${it.displayName} - ${it.description}" }.toTypedArray()
         val selection = Messages.showChooseDialog(
-            project,
-            "Select a Roq plugin to add to your project:",
-            "Add Roq Plugin",
-            Messages.getQuestionIcon(),
-            pluginNames,
-            pluginNames[0]
+            /* parent = */ project,
+            /* message = */ "Select a Roq plugin to add to your project:",
+            /* title = */ "Add Roq Plugin",
+            /* icon = */ Messages.getQuestionIcon(),
+            /* values = */ pluginNames,
+            /* initialValue = */ pluginNames[0]
         )
 
         if (selection < 0 || selection >= availablePlugins.size) {
@@ -137,19 +137,18 @@ class AddRoqPluginAction : AnAction() {
         pluginManager: RoqPluginManager,
         plugin: RoqPluginManager.RoqPlugin
     ): Boolean {
-        val pomFiles = FilenameIndex.getFilesByName(
-            project,
+        val pomFiles = FilenameIndex.getVirtualFilesByName(
             "pom.xml",
             GlobalSearchScope.projectScope(project)
         )
 
         if (pomFiles.isEmpty()) return false
 
-        val pomFile = pomFiles.first().virtualFile
+        val pomFile = pomFiles.first()
         val version = pluginManager.getRoqVersion() ?: RoqPluginManager.DEFAULT_ROQ_VERSION
 
         try {
-            WriteCommandAction.runWriteCommandAction(project) {
+            WriteCommandAction.writeCommandAction(project).run<Throwable> {
                 val content = String(pomFile.contentsToByteArray())
 
                 // Find the dependencies section
@@ -201,14 +200,13 @@ class AddRoqPluginAction : AnAction() {
         val buildFiles = listOf("build.gradle.kts", "build.gradle")
 
         for (filename in buildFiles) {
-            val files = FilenameIndex.getFilesByName(
-                project,
+            val files = FilenameIndex.getVirtualFilesByName(
                 filename,
                 GlobalSearchScope.projectScope(project)
             )
 
             if (files.isNotEmpty()) {
-                val buildFile = files.first().virtualFile
+                val buildFile = files.first()
                 return addToGradleFile(project, buildFile, pluginManager, plugin, filename.endsWith(".kts"))
             }
         }
@@ -229,7 +227,7 @@ class AddRoqPluginAction : AnAction() {
         val version = pluginManager.getRoqVersion() ?: RoqPluginManager.DEFAULT_ROQ_VERSION
 
         try {
-            WriteCommandAction.runWriteCommandAction(project) {
+            WriteCommandAction.writeCommandAction(project).run<Throwable> {
                 val content = String(buildFile.contentsToByteArray())
 
                 val quote = if (isKotlin) "\"" else "'"

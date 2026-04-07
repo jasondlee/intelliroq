@@ -101,21 +101,20 @@ class RoqPluginManager(private val project: Project) {
      */
     private fun getInstalledMavenPlugins(): List<InstalledPlugin> {
         val plugins = mutableListOf<InstalledPlugin>()
-        val pomFiles = FilenameIndex.getFilesByName(
-            project,
+        val pomFiles = FilenameIndex.getVirtualFilesByName(
             "pom.xml",
             GlobalSearchScope.projectScope(project)
         )
 
         pomFiles.forEach { pomFile ->
             try {
-                val content = String(pomFile.virtualFile.contentsToByteArray())
+                val content = String(pomFile.contentsToByteArray())
 
                 // Parse each known plugin
                 KNOWN_PLUGINS.forEach { (name, plugin) ->
                     if (content.contains(plugin.artifactId)) {
                         val version = extractVersionFromMaven(content, plugin.artifactId)
-                        plugins.add(InstalledPlugin(plugin, version, pomFile.virtualFile.path))
+                        plugins.add(InstalledPlugin(plugin, version, pomFile.path))
                     }
                 }
             } catch (e: IOException) {
@@ -134,21 +133,20 @@ class RoqPluginManager(private val project: Project) {
         val buildFiles = listOf("build.gradle", "build.gradle.kts")
 
         buildFiles.forEach { filename ->
-            val files = FilenameIndex.getFilesByName(
-                project,
+            val files = FilenameIndex.getVirtualFilesByName(
                 filename,
                 GlobalSearchScope.projectScope(project)
             )
 
             files.forEach { buildFile ->
                 try {
-                    val content = String(buildFile.virtualFile.contentsToByteArray())
+                    val content = String(buildFile.contentsToByteArray())
 
                     // Parse each known plugin
                     KNOWN_PLUGINS.forEach { (name, plugin) ->
                         if (content.contains(plugin.artifactId)) {
                             val version = extractVersionFromGradle(content, plugin.artifactId)
-                            plugins.add(InstalledPlugin(plugin, version, buildFile.virtualFile.path))
+                            plugins.add(InstalledPlugin(plugin, version, buildFile.path))
                         }
                     }
                 } catch (e: IOException) {
@@ -191,15 +189,14 @@ class RoqPluginManager(private val project: Project) {
      * Gets Roq core version from Maven.
      */
     private fun getRoqVersionFromMaven(): String? {
-        val pomFiles = FilenameIndex.getFilesByName(
-            project,
+        val pomFiles = FilenameIndex.getVirtualFilesByName(
             "pom.xml",
             GlobalSearchScope.projectScope(project)
         )
 
         pomFiles.forEach { pomFile ->
             try {
-                val content = String(pomFile.virtualFile.contentsToByteArray())
+                val content = String(pomFile.contentsToByteArray())
                 val version = extractVersionFromMaven(content, ROQ_CORE_ARTIFACT)
                 if (version != null) return version
             } catch (e: IOException) {
@@ -217,15 +214,14 @@ class RoqPluginManager(private val project: Project) {
         val buildFiles = listOf("build.gradle", "build.gradle.kts")
 
         buildFiles.forEach { filename ->
-            val files = FilenameIndex.getFilesByName(
-                project,
+            val files = FilenameIndex.getVirtualFilesByName(
                 filename,
                 GlobalSearchScope.projectScope(project)
             )
 
             files.forEach { buildFile ->
                 try {
-                    val content = String(buildFile.virtualFile.contentsToByteArray())
+                    val content = String(buildFile.contentsToByteArray())
                     val version = extractVersionFromGradle(content, ROQ_CORE_ARTIFACT)
                     if (version != null) return version
                 } catch (e: IOException) {

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-IntelliRoq is an IntelliJ Platform plugin built using the JetBrains IntelliJ Platform Plugin Template. The plugin is currently in early development (v0.0.1) and targets IntelliJ IDEA 2025.2+ (build 252+).
+Roq-idea is an IntelliJ Platform plugin built using the JetBrains IntelliJ Platform Plugin Template. The plugin is currently in early development (v0.0.1) and targets IntelliJ IDEA 2025.2+ (build 252+).
 
 The goal of the plugin is to provide native IDE support for the Roq static site generator (https://iamroq.com). The plugin should allow users to:
 - Generate a new Row project
@@ -17,8 +17,8 @@ The goal of the plugin is to provide native IDE support for the Roq static site 
 
 **Plugin Identification:**
 - Plugin ID: `com.steeplesoft`
-- Package: `com.steeplesoft.intelliroq`
-- Repository: https://github.com/jasondlee/intelliroq
+- Package: `com.steeplesoft.roq-idea`
+- Repository: https://github.com/jasondlee/roq-idea
 
 ## Build and Test Commands
 
@@ -37,7 +37,7 @@ The goal of the plugin is to provide native IDE support for the Roq static site 
 ./gradlew test
 
 # Run a single test class
-./gradlew test --tests "com.steeplesoft.intelliroq.MyPluginTest"
+./gradlew test --tests "com.steeplesoft.roq-idea.MyPluginTest"
 
 # Verify plugin compatibility with target IDE versions
 ./gradlew verifyPlugin
@@ -98,14 +98,14 @@ The plugin follows the standard IntelliJ Platform plugin architecture:
 ### Package Structure
 
 ```
-com.steeplesoft.intelliroq/
+com.steeplesoft.roq-idea/
 ├── services/          # Project and application services
 ├── startup/           # Startup activities
 ├── toolWindow/        # Tool window factories and UI
 └── MyBundle.kt        # i18n resource bundle
 ```
 
-Note: The package was recently migrated from `com.github.jasondlee.intelliroq` to `com.steeplesoft.intelliroq`. Ensure all new code uses the new package structure.
+Note: The package was recently migrated from `com.github.jasondlee.roq-idea` to `com.steeplesoft.roq-idea`. Ensure all new code uses the new package structure.
 
 ## Development Notes
 

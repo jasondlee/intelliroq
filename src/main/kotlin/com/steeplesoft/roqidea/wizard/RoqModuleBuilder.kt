@@ -166,7 +166,7 @@ class RoqModuleBuilder : ModuleBuilder() {
     ) {
         thisLogger().info("Creating Roq project using manual generation")
 
-        WriteCommandAction.runWriteCommandAction(null) {
+        WriteCommandAction.writeCommandAction(null).run<Throwable> {
             // 1. Create directory structure
             RoqProjectInitializer.createDirectoryStructure(baseDir)
 

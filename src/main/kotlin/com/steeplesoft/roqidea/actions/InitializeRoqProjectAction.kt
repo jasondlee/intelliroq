@@ -7,6 +7,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.ui.Messages
 import com.steeplesoft.roqidea.services.RoqProjectDetector
 import java.io.IOException
@@ -77,7 +78,7 @@ class InitializeRoqProjectAction : AnAction() {
      * Creates the Roq project structure and initial files.
      */
     private fun initializeRoqStructure(project: Project) {
-        val baseDir = project.baseDir ?: throw IOException("Project base directory not found")
+        val baseDir = project.guessProjectDir() ?: throw IOException("Project base directory not found")
 
         // Ask user for site URL
         val siteUrl = Messages.showInputDialog(
@@ -89,7 +90,7 @@ class InitializeRoqProjectAction : AnAction() {
             null
         ) ?: return
 
-        WriteCommandAction.runWriteCommandAction(project) {
+        WriteCommandAction.writeCommandAction(project).run<Throwable> {
             // Create directory structure
             com.steeplesoft.roqidea.wizard.RoqProjectInitializer.createDirectoryStructure(baseDir)
 
